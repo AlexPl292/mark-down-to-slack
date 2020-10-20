@@ -1,0 +1,18 @@
+plugins {
+  id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+  mavenCentral()
+  maven {
+    url "https://dl.bintray.com/jetbrains/markdown"
+  }
+}
+
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib"
+  compile group: 'org.jetbrains', name: 'markdown', version: '0.1.45'
+}
