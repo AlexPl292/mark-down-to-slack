@@ -20,14 +20,7 @@ class DownParser(private val content: String) {
     fun toSlack(): String {
         val builder = StringBuilder()
 
-        val flavourDescriptor = ChangelogFlavourDescriptor()
-        val generateHtml = HtmlGenerator(
-            content,
-            MarkdownParser(flavourDescriptor).buildMarkdownTreeFromString(content),
-            flavourDescriptor,
-            false
-        ).generateHtml()
-        println(generateHtml)
+//        toHtml()
 
         tree.accept(object : Visitor {
             override fun visitNode(node: ASTNode) {
@@ -74,6 +67,17 @@ class DownParser(private val content: String) {
         })
 
         return builder.toString()
+    }
+
+    private fun toHtml() {
+        val flavourDescriptor = ChangelogFlavourDescriptor()
+        val generateHtml = HtmlGenerator(
+            content,
+            MarkdownParser(flavourDescriptor).buildMarkdownTreeFromString(content),
+            flavourDescriptor,
+            false
+        ).generateHtml()
+        println(generateHtml)
     }
 }
 
