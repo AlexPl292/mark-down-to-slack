@@ -17,14 +17,12 @@ class DownParser(private val content: String) {
     private val parser = MarkdownParser(CommonMarkFlavourDescriptor())
     private val tree = parser.buildMarkdownTreeFromString(content)
 
-    fun toSlack(): String {
-        val builder = StringBuilder()
-
-//        toHtml()
+    fun toSlack(): CharSequence {
+        var result: CharSequence = ""
 
         tree.accept(object : Visitor {
             override fun visitNode(node: ASTNode) {
-                println(reg(node))
+                result = reg(node)
             }
 
             private fun reg(node: ASTNode): CharSequence {
@@ -66,7 +64,7 @@ class DownParser(private val content: String) {
             }
         })
 
-        return builder.toString()
+        return result
     }
 
     private fun toHtml() {
