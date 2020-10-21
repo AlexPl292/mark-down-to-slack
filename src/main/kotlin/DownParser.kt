@@ -1,3 +1,5 @@
+package dev.feedforward.markdownto
+
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode

@@ -1,3 +1,5 @@
+package dev.feedforward.markdownto
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

@@ -9,7 +9,7 @@ plugins {
   id "org.jetbrains.changelog" version "0.6.2"
 }
 
-group 'dev.feedforward'
+group 'dev.feedforward.markdownto'
 version '1.0.0'
 
 sourceCompatibility = 1.8
