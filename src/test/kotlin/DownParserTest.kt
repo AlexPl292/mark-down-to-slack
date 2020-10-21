@@ -27,6 +27,25 @@ class DownParserTest {
     @Test
     fun `unordered list`() = assertParsing("* One\n* Two", "• One\n• Two")
 
+    @Test
+    fun `inline link`() = assertParsing("[ya](ya.ru)", "<ya.ru|ya>")
+
+    @Test
+    fun `empty inline link`() = assertParsing("[](ya.ru)", "<ya.ru>")
+
+    @Test
+    fun `code block`() = assertParsing(
+        """
+        |    hello
+        |    this is code
+    """.trimMargin(), """
+        |```
+        |hello
+        |this is code
+        |```
+    """.trimMargin()
+    )
+
     private fun assertParsing(md: String, slack: String) {
         val result = DownParser(md).toSlack()
         assertEquals(slack, result)

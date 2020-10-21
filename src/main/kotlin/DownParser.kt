@@ -57,6 +57,19 @@ class DownParser(private val content: String) {
                     MarkdownElementTypes.EMPH -> node.children.findText()?.wrapWith("_", content)
                     GFMElementTypes.STRIKETHROUGH -> node.children.findText()?.wrapWith("~", content)
                     MarkdownTokenTypes.LIST_BULLET -> "• "
+                    MarkdownElementTypes.INLINE_LINK -> {
+                        val url = node.children.find { it.type == MarkdownElementTypes.LINK_DESTINATION }
+                            ?.getTextInNode(content) ?: return null
+                        val text = node.children.find { it.type == MarkdownElementTypes.LINK_TEXT }
+                            ?.children?.find { it.type == MarkdownTokenTypes.TEXT }
+                            ?.getTextInNode(content)
+                        if (text != null) "<$url|$text>" else "<$url>"
+                    }
+                    MarkdownElementTypes.CODE_BLOCK -> {
+                        val code = node.children.joinToString(separator = "") { reg(it) }
+                        "```\n$code\n```"
+                    }
+                    MarkdownTokenTypes.CODE_LINE -> node.getTextInNode(content).drop(4)
                     else -> null
                 }
             }
