@@ -7,11 +7,7 @@ import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.ast.visitors.Visitor
 import org.intellij.markdown.flavours.gfm.GFMElementTypes
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.html.TrimmingInlineHolderProvider
-import org.intellij.markdown.parser.LinkMap
 import org.intellij.markdown.parser.MarkdownParser
-import java.net.URI
 
 class DownParser(private val content: String) {
     private val parser = MarkdownParser(GFMFlavourDescriptor())
@@ -20,26 +16,24 @@ class DownParser(private val content: String) {
     fun toSlack(): CharSequence {
         var result: CharSequence = ""
 
-//        toHtml()
-
         tree.accept(object : Visitor {
             override fun visitNode(node: ASTNode) {
-                result = reg(node)
+                result = recursiveProcessing(node)
             }
 
-            private fun reg(node: ASTNode): CharSequence {
-                val processed = process(node)
+            private fun recursiveProcessing(node: ASTNode): CharSequence {
+                val processed = processNode(node)
                 if (processed != null) return processed
                 return if (node is CompositeASTNode) {
                     var content = ""
                     for (child in node.children) {
-                        content += reg(child)
+                        content += recursiveProcessing(child)
                     }
                     content
                 } else node.getTextInNode(content).toString()
             }
 
-            private fun process(node: ASTNode): CharSequence? {
+            private fun processNode(node: ASTNode): CharSequence? {
                 return when (node.type) {
                     MarkdownElementTypes.ATX_1 -> {
                         val children = node.children
@@ -66,7 +60,7 @@ class DownParser(private val content: String) {
                         if (text != null) "<$url|$text>" else "<$url>"
                     }
                     MarkdownElementTypes.CODE_BLOCK -> {
-                        val code = node.children.joinToString(separator = "") { reg(it) }
+                        val code = node.children.joinToString(separator = "") { recursiveProcessing(it) }
                         "```\n$code\n```"
                     }
                     MarkdownTokenTypes.CODE_LINE -> node.getTextInNode(content).drop(4)
@@ -83,23 +77,4 @@ class DownParser(private val content: String) {
     private fun ASTNode.wrapWith(wrapper: String, content: String): String {
         return wrapper + this.getTextInNode(content) + wrapper
     }
-
-    private fun toHtml() {
-        val flavourDescriptor = ChangelogFlavourDescriptor()
-        val generateHtml = HtmlGenerator(
-            content,
-            MarkdownParser(flavourDescriptor).buildMarkdownTreeFromString(content),
-            flavourDescriptor,
-            false
-        ).generateHtml()
-        println(generateHtml)
-    }
-}
-
-class ChangelogFlavourDescriptor : GFMFlavourDescriptor() {
-
-    override fun createHtmlGeneratingProviders(linkMap: LinkMap, baseURI: URI?) =
-        super.createHtmlGeneratingProviders(linkMap, baseURI) + hashMapOf(
-            MarkdownElementTypes.MARKDOWN_FILE to TrimmingInlineHolderProvider()
-        )
 }
