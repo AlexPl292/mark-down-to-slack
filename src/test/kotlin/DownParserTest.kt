@@ -24,6 +24,9 @@ class DownParserTest {
     @Test
     fun `strike out`() = assertParsing("~~word~~", "~word~")
 
+    @Test
+    fun `unordered list`() = assertParsing("* One\n* Two", "• One\n• Two")
+
     private fun assertParsing(md: String, slack: String) {
         val result = DownParser(md).toSlack()
         assertEquals(slack, result)

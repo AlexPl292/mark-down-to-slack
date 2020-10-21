@@ -56,6 +56,7 @@ class DownParser(private val content: String) {
                     MarkdownElementTypes.STRONG -> node.children.findText()?.wrapWith("*", content)
                     MarkdownElementTypes.EMPH -> node.children.findText()?.wrapWith("_", content)
                     GFMElementTypes.STRIKETHROUGH -> node.children.findText()?.wrapWith("~", content)
+                    MarkdownTokenTypes.LIST_BULLET -> "• "
                     else -> null
                 }
             }
