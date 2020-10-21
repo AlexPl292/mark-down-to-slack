@@ -5,7 +5,7 @@ import org.intellij.markdown.ast.CompositeASTNode
 import org.intellij.markdown.ast.accept
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.ast.visitors.Visitor
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
+import org.intellij.markdown.flavours.gfm.GFMElementTypes
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.html.TrimmingInlineHolderProvider
@@ -14,11 +14,13 @@ import org.intellij.markdown.parser.MarkdownParser
 import java.net.URI
 
 class DownParser(private val content: String) {
-    private val parser = MarkdownParser(CommonMarkFlavourDescriptor())
+    private val parser = MarkdownParser(GFMFlavourDescriptor())
     private val tree = parser.buildMarkdownTreeFromString(content)
 
     fun toSlack(): CharSequence {
         var result: CharSequence = ""
+
+//        toHtml()
 
         tree.accept(object : Visitor {
             override fun visitNode(node: ASTNode) {
@@ -42,7 +44,7 @@ class DownParser(private val content: String) {
                     MarkdownElementTypes.ATX_1 -> {
                         val children = node.children
                         if (children.size > 1) {
-                            "*" + children[1].getTextInNode(content) + "*\n"
+                            children[1].wrapWith("*", content) + "\n"
                         } else null
                     }
                     MarkdownElementTypes.ATX_2, MarkdownElementTypes.ATX_3 -> {
@@ -51,20 +53,21 @@ class DownParser(private val content: String) {
                             "*" + children[1].getTextInNode(content).drop(1) + "*\n"
                         } else null
                     }
-                    MarkdownElementTypes.STRONG -> {
-                        node.children.singleOrNull { it.type == MarkdownTokenTypes.TEXT }
-                            ?.let { "*" + it.getTextInNode(content) + "*" }
-                    }
-                    MarkdownElementTypes.EMPH -> {
-                        node.children.singleOrNull { it.type == MarkdownTokenTypes.TEXT }
-                            ?.let { "_" + it.getTextInNode(content) + "_" }
-                    }
+                    MarkdownElementTypes.STRONG -> node.children.findText()?.wrapWith("*", content)
+                    MarkdownElementTypes.EMPH -> node.children.findText()?.wrapWith("_", content)
+                    GFMElementTypes.STRIKETHROUGH -> node.children.findText()?.wrapWith("~", content)
                     else -> null
                 }
             }
         })
 
         return result
+    }
+
+    private fun List<ASTNode>.findText(): ASTNode? = this.singleOrNull { it.type == MarkdownTokenTypes.TEXT }
+
+    private fun ASTNode.wrapWith(wrapper: String, content: String): String {
+        return wrapper + this.getTextInNode(content) + wrapper
     }
 
     private fun toHtml() {

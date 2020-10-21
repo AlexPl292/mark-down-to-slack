@@ -21,6 +21,9 @@ class DownParserTest {
     @Test
     fun `test emph 2`() = assertParsing("_strong_", "_strong_")
 
+    @Test
+    fun `strike out`() = assertParsing("~~word~~", "~word~")
+
     private fun assertParsing(md: String, slack: String) {
         val result = DownParser(md).toSlack()
         assertEquals(slack, result)
