@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+### Changes
+- Do not insert a new line after headers
+
 ## 1.0.0
 
 First implementation of the library
