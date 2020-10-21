@@ -6,10 +6,16 @@ import org.junit.jupiter.api.Test
 class DownParserTest {
 
     @Test
-    fun `test header`() = assertParsing("# Header", "*Header*\n")
+    fun `test header`() = assertParsing("# Header", "*Header*")
 
     @Test
-    fun `test header 2`() = assertParsing("## Header", "*Header*\n")
+    fun `test header 2`() = assertParsing("## Header", "*Header*")
+
+    @Test
+    fun `test header 3`() = assertParsing("### Header", "*Header*")
+
+    @Test
+    fun `test header and text`() = assertParsing("## Header\nSome Text", "*Header*\nSome Text")
 
     @Test
     fun `test strong`() = assertParsing("**strong**", "*strong*")

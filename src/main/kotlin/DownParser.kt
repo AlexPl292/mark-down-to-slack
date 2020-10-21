@@ -40,13 +40,13 @@ class DownParser(private val content: String) {
                     MarkdownElementTypes.ATX_1 -> {
                         val children = node.children
                         if (children.size > 1) {
-                            children[1].wrapWith("*", content) + "\n"
+                            children[1].wrapWith("*", content)
                         } else null
                     }
                     MarkdownElementTypes.ATX_2, MarkdownElementTypes.ATX_3 -> {
                         val children = node.children
                         if (children.size > 1) {
-                            "*" + children[1].getTextInNode(content).drop(1) + "*\n"
+                            "*" + children[1].getTextInNode(content).drop(1) + "*"
                         } else null
                     }
                     MarkdownElementTypes.STRONG -> node.children.findText()?.wrapWith("*", content)
