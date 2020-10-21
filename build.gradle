@@ -2,8 +2,8 @@ plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'dev.feedforward'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
