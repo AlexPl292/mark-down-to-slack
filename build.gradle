@@ -1,5 +1,11 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+}
 plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+  id 'io.gitlab.arturbosch.detekt' version '1.14.2'
 }
 
 group 'dev.feedforward'
@@ -10,9 +16,8 @@ targetCompatibility = 1.8
 
 repositories {
   mavenCentral()
-  maven {
-    url "https://dl.bintray.com/jetbrains/markdown"
-  }
+  jcenter()
+  maven { url "https://dl.bintray.com/jetbrains/markdown" }
 }
 
 dependencies {

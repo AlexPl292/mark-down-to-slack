@@ -63,7 +63,7 @@ class DownParser(private val content: String) {
                         val code = node.children.joinToString(separator = "") { recursiveProcessing(it) }
                         "```\n$code\n```"
                     }
-                    MarkdownTokenTypes.CODE_LINE -> node.getTextInNode(content).drop(4)
+                    MarkdownTokenTypes.CODE_LINE -> node.getTextInNode(content).drop(CODE_INDENT)
                     else -> null
                 }
             }
@@ -76,5 +76,9 @@ class DownParser(private val content: String) {
 
     private fun ASTNode.wrapWith(wrapper: String, content: String): String {
         return wrapper + this.getTextInNode(content) + wrapper
+    }
+
+    companion object {
+        private const val CODE_INDENT = 4
     }
 }
