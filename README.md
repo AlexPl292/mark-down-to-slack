@@ -6,7 +6,7 @@ Markdown to Slack-markdown converter for java.
 
 Gradle:
 
-```
+```groovy
 allprojects {
     repositories {
         ...
@@ -23,7 +23,7 @@ Or visit [jitpack](https://jitpack.io/#AlexPl292/mark-down-to-slack) to find out
 
 ## Usage
 
-```
+```java
 import dev.feedforward.markdownto.DownParser
 
 public static void main() {
