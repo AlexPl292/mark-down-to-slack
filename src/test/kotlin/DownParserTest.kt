@@ -36,6 +36,17 @@ class DownParserTest {
     fun `empty inline link`() = assertParsing("[](ya.ru)", "<ya.ru>")
 
     @Test
+    fun `complicated list`() = assertParsing("""
+        * Item1
+        * **Item2**
+        * [Item3](ya.ru)
+    """.trimIndent(), """
+        • Item1
+        • *Item2*
+        • <ya.ru|Item3>
+    """.trimIndent())
+
+    @Test
     fun `code block`() = assertParsing(
         """
         |    hello
