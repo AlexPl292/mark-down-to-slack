@@ -28,7 +28,7 @@ import dev.feedforward.markdownto.DownParser
 
 public static void main() {
   String markdown = "#Header";
-  CharSequence slackMarkdown = new DownParser(input).toSlack().toString();
+  String slackMarkdown = new DownParser(input).toSlack().toString();
   System.out.println(slackMarkdown);
 }
 ```
