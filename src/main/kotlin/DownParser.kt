@@ -11,7 +11,7 @@ import org.intellij.markdown.flavours.gfm.GFMElementTypes
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.parser.MarkdownParser
 
-class DownParser(private val content: String) {
+class DownParser(private val content: String, private val escapeQuotes: Boolean = true) {
     private val parser = MarkdownParser(GFMFlavourDescriptor())
     private val tree = parser.buildMarkdownTreeFromString(content)
 
@@ -25,14 +25,16 @@ class DownParser(private val content: String) {
 
             private fun recursiveProcessing(node: ASTNode): CharSequence {
                 val processed = processNode(node)
-                if (processed != null) return processed
+                if (processed != null) {
+                    return processed
+                }
                 return if (node is CompositeASTNode) {
                     var content = ""
                     for (child in node.children) {
                         content += recursiveProcessing(child)
                     }
-                    content
-                } else node.getTextInNode(content).toString()
+                    content.escapeQuotes()
+                } else node.getTextInNode(content).escapeQuotes()
             }
 
             private fun processNode(node: ASTNode): CharSequence? {
@@ -72,6 +74,11 @@ class DownParser(private val content: String) {
         })
 
         return result
+    }
+
+    private fun CharSequence.escapeQuotes(): CharSequence {
+        if (!escapeQuotes) return this
+        return this.replace("\"".toRegex(), "\\\\\"")
     }
 
     private fun List<ASTNode>.findText(): ASTNode? = this.singleOrNull { it.type == MarkdownTokenTypes.TEXT }

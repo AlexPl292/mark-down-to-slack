@@ -65,6 +65,9 @@ class DownParserTest {
     """.trimMargin()
     )
 
+    @Test
+    fun `quote escaping`() = assertParsing("""# Hello "World"!""", """*Hello \"World\"!*""")
+
     private fun assertParsing(md: String, slack: String) {
         val result = DownParser(md).toSlack()
         assertEquals(slack, result)
