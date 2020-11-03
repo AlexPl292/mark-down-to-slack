@@ -68,6 +68,15 @@ class DownParserTest {
     @Test
     fun `quote escaping`() = assertParsing("""# Hello "World"!""", """*Hello \"World\"!*""")
 
+    @Test
+    fun `quote escaping 2`() = assertParsing("""
+       * `IdeaVim: track action Ids` command to find action ids for the `:action` command.
+          Enable this option in "Search everywhere" (double shift). 
+    """.trimIndent(), """
+       • `IdeaVim: track action Ids` command to find action ids for the `:action` command.
+          Enable this option in \"Search everywhere\" (double shift). 
+    """.trimIndent())
+
     private fun assertParsing(md: String, slack: String) {
         val result = DownParser(md).toSlack()
         assertEquals(slack, result)

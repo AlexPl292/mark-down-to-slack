@@ -33,8 +33,8 @@ class DownParser(private val content: String, private val escapeQuotes: Boolean 
                     for (child in node.children) {
                         content += recursiveProcessing(child)
                     }
-                    content.escapeQuotes()
-                } else node.getTextInNode(content).toString().escapeQuotes()
+                    content
+                } else node.getTextInNode(content)
             }
 
             private fun processNode(node: ASTNode): CharSequence? {
@@ -42,13 +42,15 @@ class DownParser(private val content: String, private val escapeQuotes: Boolean 
                     MarkdownElementTypes.ATX_1 -> {
                         val children = node.children
                         if (children.size > 1) {
-                            children[1].wrapWith("*", content)
+                            val headerContent = recursiveProcessing(children[1])
+                            "*$headerContent*"
                         } else null
                     }
                     MarkdownElementTypes.ATX_2, MarkdownElementTypes.ATX_3 -> {
                         val children = node.children
                         if (children.size > 1) {
-                            "*" + children[1].getTextInNode(content).drop(1) + "*"
+                            val headerContent = recursiveProcessing(children[1]).drop(1)
+                            "*$headerContent*"
                         } else null
                     }
                     MarkdownElementTypes.STRONG -> node.children.findText()?.wrapWith("*", content)
@@ -68,17 +70,13 @@ class DownParser(private val content: String, private val escapeQuotes: Boolean 
                         "```\n$code\n```"
                     }
                     MarkdownTokenTypes.CODE_LINE -> node.getTextInNode(content).drop(CODE_INDENT)
+                    MarkdownTokenTypes.DOUBLE_QUOTE -> if (escapeQuotes) """\"""" else "\""
                     else -> null
                 }
             }
         })
 
         return result
-    }
-
-    private fun String.escapeQuotes(): CharSequence {
-        if (!escapeQuotes) return this
-        return this.replace("\"", """\"""")
     }
 
     private fun List<ASTNode>.findText(): ASTNode? = this.singleOrNull { it.type == MarkdownTokenTypes.TEXT }
