@@ -34,7 +34,7 @@ class DownParser(private val content: String, private val escapeQuotes: Boolean 
                         content += recursiveProcessing(child)
                     }
                     content.escapeQuotes()
-                } else node.getTextInNode(content).escapeQuotes()
+                } else node.getTextInNode(content).toString().escapeQuotes()
             }
 
             private fun processNode(node: ASTNode): CharSequence? {
@@ -76,9 +76,9 @@ class DownParser(private val content: String, private val escapeQuotes: Boolean 
         return result
     }
 
-    private fun CharSequence.escapeQuotes(): CharSequence {
+    private fun String.escapeQuotes(): CharSequence {
         if (!escapeQuotes) return this
-        return this.replace("\"".toRegex(), "\\\\\"")
+        return this.replace("\"", """\"""")
     }
 
     private fun List<ASTNode>.findText(): ASTNode? = this.singleOrNull { it.type == MarkdownTokenTypes.TEXT }
