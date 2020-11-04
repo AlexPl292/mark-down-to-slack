@@ -24,10 +24,10 @@ Or visit [jitpack](https://jitpack.io/#AlexPl292/mark-down-to-slack) to find out
 ## Usage
 
 ```java
-import dev.feedforward.markdownto.DownParser
+import dev.feedforward.markdownto.DownParser;
 
 public static void main() {
-  String markdown = "#Header";
+  String markdown = "# Header";
   String slackMarkdown = new DownParser(input).toSlack().toString();
   System.out.println(slackMarkdown);
 }
