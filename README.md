@@ -15,7 +15,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.AlexPl292:mark-down-to-slack:1.0.1'
+    implementation 'com.github.AlexPl292:mark-down-to-slack:1.1.2'
 }
 ```
 
